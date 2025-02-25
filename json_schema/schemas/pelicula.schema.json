@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema#",
+  "$id": "http://example.com/schemas/films.schema.json",
+  "type": "object",
+  "title": "Film",
+  "description": "Film information",
+  "properties": {
+    "titulo": {
+      "type": "string",
+      "description": "Painting name"
+    },
+    "año": {
+      "type": "integer",
+      "minimum": 1800
+    },
+    "directores": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/person"
+      }
+    },
+    "generos": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Acción",
+          "Aventura",
+          "Fantasía",
+          "Ciencia ficción"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "minutos": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "putuacion": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10
+    },
+    "actores": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/person"
+      }
+    },
+    "presupuesto": {
+      "type": "integer"
+    },
+    "descripcion": {
+      "type": "string"
+    },
+    "idioma": {
+      "type": "string"
+    },
+    "beneficios": {
+      "type": "integer"
+    },
+    "premios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "año": {
+            "type": "integer"
+          },
+          "titulo": {
+            "type": "string"
+          },
+          "ganado": {
+            "type": "boolean"
+          },
+          "categoria": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "person": {
+      "type": "string"
+    }
+  }
+}

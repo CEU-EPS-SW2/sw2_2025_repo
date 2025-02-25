@@ -1,0 +1,26 @@
+{
+	"titulo": "Avatar: El Camino Del Agua",
+	"año": 2022,
+	"directores": ["James Cameron"],
+	"generos": ["Acción","Aventura","Fantasía","Ciencia ficción"],
+	"minutos":192,
+	"puntuacion": 7.5,
+	"actores":["Sam Worthington","Zoe Saldaña","Sigourney Weaver"],  
+	"presupuesto": 356000000,
+	"descripcion": "Jake Sully vive con su nueva familia en el planeta de Pandora. Cuando una amenaza conocida regresa, Jake debe trabajar con Neytiri y el ejército de la raza na'vi para proteger su planeta.",
+	"idioma":"Inglés",
+	"beneficios": 232000000,
+	"premios": [
+		{
+		"año":2023,
+		"titulo": "Oscar",
+		"ganado":false,
+		"categoria":"Best Sound"
+	},
+	{
+		"año":2023,
+		"titulo": "Oscar",
+		"ganado":true,
+		"categoria":"Best Motion Picture of the Year"
+	}]
+}
