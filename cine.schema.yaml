@@ -1,0 +1,256 @@
+openapi: 3.0.3
+info: 
+  title: API REST para nuestro cine
+  version: 0.1.0
+  description: API REST para nuestro cine
+servers:
+  - url: 127.0.0.1:3000/api/v1
+paths:
+  /sesiones:
+    get:
+      summary: GET Lista de sesiones
+      description: GET Lista de sesiones
+      parameters:
+      - $ref: '#/components/parameters/date'
+      - $ref: '#/components/parameters/film'
+      - $ref: '#/components/parameters/version'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sesiones'
+        "400":
+          description: Algunos parámetros no son correctos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorMessage'
+    post:
+      summary: Crear una nueva sesión
+      description: Crear una nueva sesión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sesion'
+      responses:
+        "201":
+          description: Creada nueva sesión
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mensajeInformativo'
+        "4XX":
+          description: Error al crear la sesión
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorMessage'
+  /sesiones/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      summary: GET de una sesión concreta
+      description: GET de una sesión concreta
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sesion'
+        "404":
+          description: Id no válido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorMessage'
+    put:
+      summary: Modificar una sesión concreta
+      description: Modificar una sesión concreta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sesion_actualizar'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mensajeInformativo'
+        "4XX":
+          description: Error al modificar sesión
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorMessage'
+    delete:
+      summary: Eliminar una sesión concreta
+      description: Eliminar una sesión concreta
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mensajeInformativo'
+        "4XX":
+          description: Error al borrar sesión
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorMessage'
+  /sesiones/{id}/reservar:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    post:
+      summary: Reservar una sesión
+      description: Reservar una sesión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/compra'
+      responses:
+        "201":
+          description: Reserva realizada con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket'
+        "4XX":
+          description: Error al crear la sesión
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorMessage'
+components:
+  parameters:
+    id:
+      description: Id de una sesión o película
+      name: id
+      required: true
+      in: path
+      schema:
+        $ref: '#/components/schemas/id'
+    date:
+      description: Fecha de una sesión
+      name: date
+      required: false
+      in: query
+      schema:
+        $ref: '#/components/schemas/date'
+    film:
+      description: Nombre de una película
+      name: film
+      required: false
+      in: query
+      schema:
+        $ref: '#/components/schemas/film'
+    version:
+      description: Versión de una sesión
+      name: version
+      required: false
+      in: query
+      schema:
+        $ref: '#/components/schemas/version'
+  schemas:
+    sesiones:
+      type: object
+      properties:
+        results:
+          $ref: '#/components/schemas/sesiones_array'
+        next:
+          description: Información para seguir buscando más sesiones
+          anyOf:
+          - type: string
+          # - type: null
+      required:
+        - results
+        - next
+    sesiones_array:
+      type: array
+      items:
+        $ref: '#/components/schemas/sesion'
+    sesion_actualizar:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/id'
+        fecha:
+          $ref: '#/components/schemas/date'
+        sala:
+          type: string
+          pattern: "^[1-9]\\.[1-9][0-9]?$"
+          example: "3.2"
+        pelicula:
+          $ref: '#/components/schemas/pelicula' # TODO
+        version:
+          $ref: '#/components/schemas/version'
+        formato:
+          type: string
+          enum:
+          - 2D
+          - 3D
+          - 4D
+        asientos_disponibles:
+          type: integer
+          minimum: 0
+        adaptada:
+           type: boolean
+        precio:
+          type: number
+          minimum: 0
+    sesion:
+      allOf:
+      - $ref: '#/components/schemas/sesion_actualizar'
+      - required:
+        - id
+        - fecha
+        - sala
+        - pelicula
+        - version
+        - formato
+        - asientos_disponibles
+        - adaptada
+        - precio
+    id:
+      type: integer
+    date:
+      type: string
+      format: date-time
+    film:
+      type: string
+    version:
+      type: string
+      enum: ["Original","Doblada","Subtitulada"]
+    errorMessage:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+    mensajeInformativo:
+      type: object
+      properties:
+        message:
+          type: string
+        ref:
+          type: string
+          format: uri
+      required:
+      - message
+    compra:
+      type: object
+    ticket:
+      type: object
+    pelicula:
+      type: object
