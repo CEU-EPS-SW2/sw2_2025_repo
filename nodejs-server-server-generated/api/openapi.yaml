@@ -1,0 +1,339 @@
+openapi: 3.0.3
+info:
+  title: API REST para nuestro cine
+  description: API REST para nuestro cine
+  version: 0.1.0
+servers:
+- url: 127.0.0.1:8080/api/v1
+paths:
+  /sesiones:
+    get:
+      summary: GET Lista de sesiones
+      description: GET Lista de sesiones
+      operationId: sesionesGET
+      parameters:
+      - name: date
+        in: query
+        description: Fecha de una sesión
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: "#/components/schemas/date"
+      - name: film
+        in: query
+        description: Nombre de una película
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: "#/components/schemas/film"
+      - name: version
+        in: query
+        description: Versión de una sesión
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: "#/components/schemas/version"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/sesiones"
+        "400":
+          description: Algunos parámetros no son correctos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorMessage"
+      x-swagger-router-controller: Default
+    post:
+      summary: Crear una nueva sesión
+      description: Crear una nueva sesión
+      operationId: sesionesPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/sesion"
+        required: true
+      responses:
+        "201":
+          description: Creada nueva sesión
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/mensajeInformativo"
+        "4XX":
+          description: Error al crear la sesión
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorMessage"
+      x-swagger-router-controller: Default
+  /sesiones/{id}:
+    get:
+      summary: GET de una sesión concreta
+      description: GET de una sesión concreta
+      operationId: sesionesIdGET
+      parameters:
+      - name: id
+        in: path
+        description: Id de una sesión o película
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: "#/components/schemas/id"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/sesion"
+        "404":
+          description: Id no válido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorMessage"
+      x-swagger-router-controller: Default
+    put:
+      summary: Modificar una sesión concreta
+      description: Modificar una sesión concreta
+      operationId: sesionesIdPUT
+      parameters:
+      - name: id
+        in: path
+        description: Id de una sesión o película
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: "#/components/schemas/id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/sesion_actualizar"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/mensajeInformativo"
+        "4XX":
+          description: Error al modificar sesión
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorMessage"
+      x-swagger-router-controller: Default
+    delete:
+      summary: Eliminar una sesión concreta
+      description: Eliminar una sesión concreta
+      operationId: sesionesIdDELETE
+      parameters:
+      - name: id
+        in: path
+        description: Id de una sesión o película
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: "#/components/schemas/id"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/mensajeInformativo"
+        "4XX":
+          description: Error al borrar sesión
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorMessage"
+      x-swagger-router-controller: Default
+  /sesiones/{id}/reservar:
+    post:
+      summary: Reservar una sesión
+      description: Reservar una sesión
+      operationId: sesionesIdReservarPOST
+      parameters:
+      - name: id
+        in: path
+        description: Id de una sesión o película
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: "#/components/schemas/id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/compra"
+        required: true
+      responses:
+        "201":
+          description: Reserva realizada con éxito
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ticket"
+        "4XX":
+          description: Error al crear la sesión
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorMessage"
+      x-swagger-router-controller: Default
+components:
+  schemas:
+    sesiones:
+      required:
+      - next
+      - results
+      type: object
+      properties:
+        results:
+          $ref: "#/components/schemas/sesiones_array"
+        next:
+          type: string
+          description: Información para seguir buscando más sesiones
+          nullable: true
+      example:
+        next: next
+        results:
+        - ""
+        - ""
+    sesiones_array:
+      type: array
+      items:
+        $ref: "#/components/schemas/sesion"
+    sesion_actualizar:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/id"
+        fecha:
+          $ref: "#/components/schemas/date"
+        sala:
+          pattern: "^[1-9]\\.[1-9][0-9]?$"
+          type: string
+          example: "3.2"
+        pelicula:
+          $ref: "#/components/schemas/pelicula"
+        version:
+          $ref: "#/components/schemas/version"
+        formato:
+          type: string
+          enum:
+          - 2D
+          - 3D
+          - 4D
+        asientos_disponibles:
+          minimum: 0
+          type: integer
+        adaptada:
+          type: boolean
+        precio:
+          minimum: 0
+          type: number
+    sesion:
+      allOf:
+      - $ref: "#/components/schemas/sesion_actualizar"
+      - required:
+        - adaptada
+        - asientos_disponibles
+        - fecha
+        - formato
+        - id
+        - pelicula
+        - precio
+        - sala
+        - version
+    id:
+      type: integer
+    date:
+      type: string
+      format: date-time
+    film:
+      type: string
+    version:
+      type: string
+      enum:
+      - Original
+      - Doblada
+      - Subtitulada
+    errorMessage:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+    mensajeInformativo:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+        ref:
+          type: string
+          format: uri
+      example:
+        ref: http://example.com/aeiou
+        message: message
+    compra:
+      type: object
+    ticket:
+      type: object
+    pelicula:
+      type: object
+  parameters:
+    id:
+      name: id
+      in: path
+      description: Id de una sesión o película
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: "#/components/schemas/id"
+    date:
+      name: date
+      in: query
+      description: Fecha de una sesión
+      required: false
+      style: form
+      explode: true
+      schema:
+        $ref: "#/components/schemas/date"
+    film:
+      name: film
+      in: query
+      description: Nombre de una película
+      required: false
+      style: form
+      explode: true
+      schema:
+        $ref: "#/components/schemas/film"
+    version:
+      name: version
+      in: query
+      description: Versión de una sesión
+      required: false
+      style: form
+      explode: true
+      schema:
+        $ref: "#/components/schemas/version"

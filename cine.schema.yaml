@@ -169,8 +169,11 @@ components:
           $ref: '#/components/schemas/sesiones_array'
         next:
           description: Información para seguir buscando más sesiones
-          anyOf:
-          - type: string
+          type: string
+          nullable: true # Versión 3.0 OAS
+          # Versión 3.1 OAS
+          # anyOf:
+          # - type: string
           # - type: null
       required:
         - results
