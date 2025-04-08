@@ -1,0 +1,16 @@
+1. En sample_training.zips ¿Cuántas colecciones tienen menos de 1000 personas en el campo pop? (sol. 8065)
+db.zips.countDocuments({pop:{$lt:1000}})
+db.zips.find({pop:{$lt:1000}}).count()
+
+2. En sample_training.trips ¿Cuál es la diferencia entre la gente que nació en 1998 y la que nació después de 1998? (sol. 6)
+Math.abs(db.trips.find({"birth year": 1998}).count()-db.trips.find({"birth year": {$gt:1998}}).count())
+
+3. En sample_training.routes ¿Cuántas rutas tienen al menos una parada? (sol. 11)
+db.routes.find({stops:{$gt:0}}).count()
+
+4. En sample_training.inspections ¿Cuántos negocios tienen un resultado de inspección "Out of Business" y pertenecen al sector "Home Improvement Contractor - 100"? (sol. 4)
+db.inspections.find({result: "Out of Business", sector: "Home Improvement Contractor - 100"}).count()
+
+5. En sample_training.inspections ¿Cuántos documentos hay con fecha de inspección "Feb 20 2015" o "Feb 21 2015" y cuyo sector no sea "Cigarette Retail Dealer - 127"? (sol. 204)
+db.inspections.find({date: {$in:["Feb 20 2015","Feb 21 2015"]},sector:{$ne:"Cigarette Retail Dealer - 127"}}).count()
+db.inspections.find({$or:[{date:"Feb 20 2015"},{date:"Feb 21 2015"}],sector:{$ne:"Cigarette Retail Dealer - 127"}}).count()
