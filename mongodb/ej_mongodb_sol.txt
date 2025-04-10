@@ -1,3 +1,4 @@
+# EJ1
 1. En sample_training.zips ¿Cuántas colecciones tienen menos de 1000 personas en el campo pop? (sol. 8065)
 db.zips.countDocuments({pop:{$lt:1000}})
 db.zips.find({pop:{$lt:1000}}).count()
@@ -14,3 +15,36 @@ db.inspections.find({result: "Out of Business", sector: "Home Improvement Contra
 5. En sample_training.inspections ¿Cuántos documentos hay con fecha de inspección "Feb 20 2015" o "Feb 21 2015" y cuyo sector no sea "Cigarette Retail Dealer - 127"? (sol. 204)
 db.inspections.find({date: {$in:["Feb 20 2015","Feb 21 2015"]},sector:{$ne:"Cigarette Retail Dealer - 127"}}).count()
 db.inspections.find({$or:[{date:"Feb 20 2015"},{date:"Feb 21 2015"}],sector:{$ne:"Cigarette Retail Dealer - 127"}}).count()
+
+# EJ2
+1. En sample_training.companies, ¿cuántas empresas tienen más empleados que el año en el que se fundaron? (sol. 324)
+db.companies.find({$expr:{$gt:["$number_of_employees","$founded_year"]}}).count()
+
+2. En sample_training.companies, ¿en cuántas empresas coinciden su permalink con su twitter_username? (sol. 1299)
+db.companies.find({$expr:{$eq:["$permalink","$twitter_username"]}}).count()
+
+3. En sample_airbnb.listingsAndReviews, ¿cuál es el nombre del alojamiento en el que pueden estar más de 6 personas alojadas y tiene exactamente 50 reviews? (sol. Sunset Beach Lodge Retreat)
+db.listingsAndReviews.find({"accommodates":{$gt:6},"number_of_reviews":50},{name:1, _id:0})
+
+4. En sample_airbnb.listingsAndReviews, ¿cuántos documentos tienen el "property_type" "House" e incluyen "Changing table"  como una de las "amenities"? (sol. 11)
+db.listingsAndReviews.find({property_type:"House",amenities:"Changing table"}).count()
+
+5. En sample_training.companies, ¿Cuántas empresas tienen oficinas en Seattle? (sol. 117)
+db.companies.find({"offices.city":"Seattle"}).count()
+db.companies.find({offices:{$elemMatch:{city:"Seattle"}}}).count()
+
+6. En sample_training.companies, haga una query que devuelva únicamente el nombre de las empresas que tengan exactamente 8 "funding_rounds"
+db.companies.find({funding_rounds:{$size:8}},{name:1, _id:0})
+
+7. En sample_training.trips, ¿cuántos viajes empiezan en estaciones que están al oeste de la longitud -74? (sol. 1928)
+Nota 1: Hacia el oeste la longitud decrece
+Nota 2: el formato es <field_name>: [ <longitud>, <latitud> ]
+db.trips.find({'start station location.coordinates.0':{$lt:-74}}).count()
+
+8. En sample_training.inspections, ¿cuántas inspecciones se llevaron a cabo en la ciudad de "NEW YORK"? (sol. 18279)
+db.inspections.find({"address.city":"NEW YORK"}).count()
+
+9. En sample_airbnb.listingsAndReviews, haga una query que devuelva el nombre y la dirección de los alojamientos que tengan "Internet" como primer elemento de "amenities"
+db.listingsAndReviews.find({"amenities.0":"Internet"},{name:1,address:1,_id:0})
+
+# EJ3
