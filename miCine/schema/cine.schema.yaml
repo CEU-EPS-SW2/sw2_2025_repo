@@ -1,0 +1,374 @@
+openapi: 3.0.3
+info:
+  title: API REST para nuestro cine
+  version: 0.0.1
+  description: API REST para nuestro cine
+servers:
+  - url: 127.0.0.1:3000/api/v1
+paths:
+  /peliculas:
+    get:
+      summary: GET todas las películas
+      description: GET todas las películas
+      responses:
+        "200":
+          description: "OK"
+          content:
+             application/json:
+              schema: 
+                $ref: '#/components/schemas/peliculas'
+    post:
+      summary: Crear nueva película
+      description: TODO
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/pelicula"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/nuevoElemento"
+        "4XX":
+          description: The provided parameters are incorrect
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorMessage"
+  /peliculas/{id}:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: Obtener información de una película concreta
+      description: TODO
+      responses:
+        "200":
+          description: "OK"
+          content:
+             application/json:
+              schema: 
+                $ref: '#/components/schemas/pelicula'
+        "404":
+          description: No existe la película con ese ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorMessage"
+    put:
+      summary: Editar una película
+      description: TODO
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/pelicula_actualizar"
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/nuevoElemento"
+        "4XX":
+          description: The provided parameters are incorrect
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorMessage"
+    delete:
+      summary: Eliminar una película
+      description: TODO
+      responses:
+        "200":
+          description: "Ok"
+        "4XX":
+          description: The provided parameters are incorrect
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorMessage"
+  /peliculas/{id}/sesiones:
+    parameters:
+      - $ref: "#/components/parameters/id"
+    get:
+      summary: Obtener las sesiones de una película
+      description: TODO
+      responses:
+        "200":
+          description: "OK"
+          content:
+             application/json:
+              schema: 
+                $ref: '#/components/schemas/sesiones'
+    post:
+      summary: Crear nueva sesión para una película
+      description: TODO
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/sesion"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/nuevoElemento"
+        "4XX":
+          description: The provided parameters are incorrect
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorMessage"
+  /peliculas/{id}/sesiones/{idSesion}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          $ref: "#/components/parameters/id"
+        required: true
+      - in: path
+        name: idSesion
+        schema:
+          $ref: "#/components/parameters/id"
+        required: true
+    get:
+      summary: Obtener información de una sesión para una película concreta
+      description: TODO
+      responses:
+        "200":
+          description: "OK"
+          content:
+             application/json:
+              schema: 
+                $ref: '#/components/schemas/sesion'
+        "404":
+          description: No existe la película con ese ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorMessage"
+    put:
+      summary: Editar una sesión
+      description: TODO
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/sesion_actualizar"
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/nuevoElemento"
+        "4XX":
+          description: The provided parameters are incorrect
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorMessage"
+    delete:
+      summary: Eliminar una sesión de una película
+      description: TODO
+      responses:
+        "200":
+          description: "Ok"
+        "4XX":
+          description: The provided parameters are incorrect
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorMessage"
+components:
+  parameters:
+    id:
+      description: id de una película o sesión
+      name: id
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/id"
+  schemas:
+    peliculas:
+      type: object
+      properties:
+        results:
+          $ref: "#/components/schemas/peliculas_result"
+        next:
+          anyOf:
+          - type: string
+          - type: "null"
+          description: _id de la película para poder seguir la búsqueda usando paginación
+      required:
+        - results
+        - next
+
+    peliculas_result:
+      type: array
+      items:
+        $ref: "#/components/schemas/pelicula"
+      example: [{
+        "id": 1,
+        "titulo": "Avatar: The Way of Water",
+        "directores": [{"nombre": "James Cameron"}],
+        "actores": [{"nombre": "Sam Worthington"},{"nombre": "Zoe Saldana"},{"nombre": "Sigourney Weaver"}],
+        "duracion": 192,
+        "edad_min": "PG-13",
+        "resumen": "Jake Sully lives with his newfound family formed on the extrasolar moon Pandora. Once a familiar threat returns to finish what was previously started, Jake must work with Neytiri and the army of the Na'vi race to protect their home.",
+        "genero":["action","adventure","fantasy"],
+        "url_sesiones": "http://example.com/api/v1/peliculas/1/sesiones"
+        }]
+    pelicula_actualizar:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/id"
+        titulo:
+          type: string
+          description: Título de la película
+        directores:
+          type: array
+          items:
+            $ref: "#/components/schemas/persona"
+        actores:
+          type: array
+          items:
+            $ref: "#/components/schemas/persona"
+        duracion:
+          type: integer
+          minimum: 0
+          description: Duración de la película en minutos
+        edad_min:
+          type: string
+          enum: ["G","PG","PG-13","R","NC-17"]
+          description: Edad mínima recomendada
+        resumen:
+          type: string
+          description: Resumen de la película
+        genero:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          description: Género de la película
+        url_sesiones:
+          type: string
+          format: uri
+          description: Enlace a la información de las sesiones de esta película
+      example: {
+        "duracion": 192
+        }
+    pelicula:
+      allOf:
+        - required:
+          - titulo
+          - directores
+          - actores
+          - duracion
+          - resumen
+        - $ref: "#/components/schemas/pelicula_actualizar"
+      additionalProperties: true
+      example: {
+        "titulo": "Avatar: The Way of Water",
+        "directores": [{"nombre": "James Cameron"}],
+        "actores": [{"nombre": "Sam Worthington"},{"nombre": "Zoe Saldana"},{"nombre": "Sigourney Weaver"}],
+        "duracion": 192,
+        "edad_min": "PG-13",
+        "resumen": "Jake Sully lives with his newfound family formed on the extrasolar moon Pandora. Once a familiar threat returns to finish what was previously started, Jake must work with Neytiri and the army of the Na'vi race to protect their home.",
+        "genero":["action","adventure","fantasy"]
+        }
+    id:
+      type: integer
+      minimum: 1
+      example: 123
+    idSesion:
+      $ref: "#/components/schemas/id"
+    persona:
+      type: object
+      properties:
+        nombre:
+          type: string
+        apellidos:
+          type: string
+        fecha_nacimiento:
+          type: string
+          format: date
+      required:
+      - nombre
+    errorMessage:
+      type: object
+      properties:
+        error:
+          type: string
+          enum: ["Faltan parámetros"]
+        mensaje:
+          type: string
+      required:
+      - error
+      - mensaje
+      additionalProperties: false
+      example: {"error": "faltan parámetros",
+        "mensaje": "Faltan los parámetros P1 y P2"}
+    sesiones:
+      type: array
+      items:
+        $ref: "#/components/schemas/sesion"
+      example: [{
+        "fecha": "2023-03-20",
+        "hora_inicio": "21:00",
+        "sala": "Sala 25",
+        "keywords": ["V.O.", "3D"]
+        }]
+    sesion_actualizar:
+      type: object
+      properties:
+        fecha:
+          type: string
+          format: date
+        hora_inicio:
+          type: string
+          format: time
+        sala:
+          type: string
+        keywords:
+          type: array
+          items:
+            type: string
+            enum: ["v.O", "3D"]
+      example: {
+        "fecha": "2023-03-20"
+      }
+    sesion:
+      allOf:
+        - required:
+          - fecha
+          - hora_inicio
+          - sala
+        - $ref: '#/components/schemas/sesion_actualizar'
+      example: {
+        "fecha": "2023-03-20",
+        "hora_inicio": "21:00",
+        "sala": "Sala 25",
+        "keywords": ["V.O.", "3D"]
+      }
+    nuevoElemento:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/id"
+        url:
+          description: Enlace a la sesión o película creada
+          type: string
+          format: uri
+      example: {"id": 123,
+        "url": "http://example.com/api/v1/peliculas/123"}
