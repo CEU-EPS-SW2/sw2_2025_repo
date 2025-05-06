@@ -1,0 +1,32 @@
+<!DOCTYPE articles [
+<!ELEMENT articles (article+)>
+<!ELEMENT article (name,month,author,(reviews,feedback?)+)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT month (#PCDATA)>
+<!ELEMENT author EMPTY>
+<!ELEMENT reviews (#PCDATA)>
+<!ELEMENT feedback (#PCDATA)>
+
+<!ATTLIST article id CDATA #REQUIRED>
+<!ATTLIST author name CDATA #REQUIRED>
+<!ATTLIST reviews lang CDATA #REQUIRED>
+]>
+
+<articles>
+  <article id="x34675">
+    <name>Apache Spark Architecture</name>
+    <month>december</month>
+    <author name="kay vennisla"/>
+    <reviews lang=""/>
+    <feedback > high rating</feedback>
+    <reviews lang="de">The best content with diagrams</reviews>
+  </article>
+  <article id="x34675">
+    <name>Apache Spark Architecture</name>
+    <month>december</month>
+    <author name="kay vennisla"/>
+    <reviews lang=""/>
+    <reviews lang="de">The best content with diagrams</reviews>
+    <feedback > high rating</feedback>
+  </article>
+</articles>
