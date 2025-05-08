@@ -1,0 +1,20 @@
+1. Los títulos de todas las escenas del segundo acto
+doc("hamlet.xml")/PLAY/ACT[2]/SCENE/TITLE/text()
+
+2. ¿Cuántas veces habla Hamlet?
+count(doc("hamlet.xml")//SPEECH[SPEAKER='HAMLET'])
+
+3. El texto de las líneas que contengan la palabra "king"
+doc("hamlet.xml")//LINE[contains(.," king ") or contains(.," king ") or contains(.," king!")]/text()
+
+4. El segundo diálogo (speech) de Bernardo en el tercer acto
+doc("hamlet.xml")//ACT[1]/SCENE[1]/SPEECH[SPEAKER="BERNARDO"][2]
+
+5. Número de líneas de cada diálogo (speech)
+doc("hamlet.xml")//SPEECH/count(LINE)
+
+6. Número de líneas del diálogo (speech) con más líneas
+max(doc("hamlet.xml")//SPEECH/count(LINE))
+
+7. Todos los diálogos (speech) de la tercera PERSONA del primer PGROUP dentro de PERSONAE
+doc("hamlet.xml")//SPEECH[SPEAKER=doc("hamlet.xml")//PERSONAE/PGROUP[1]/PERSONA[3]]
