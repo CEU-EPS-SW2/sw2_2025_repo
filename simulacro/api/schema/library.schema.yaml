@@ -1,0 +1,125 @@
+openapi: 3.0.3
+info:
+  description: |-
+    My Library documentation
+  version: 1.0.0
+  title: Library
+tags:
+  - name: book
+    description: Everything about your Books
+paths:
+  /book:
+    get:
+      summary: GET all books
+      description: GET all books
+      responses:
+        "200":
+          description: "OK"
+          content:
+             application/json:
+              schema: 
+                $ref: '#/components/schemas/Books'
+    post:
+      tags:
+        - book
+      summary: Add a new book to the library
+      description: Add a new book to the library
+      operationId: addBook
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '405':
+          description: Invalid input
+      requestBody:
+        description: Add a new book to the library
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+  /book/{bookId}:
+    parameters:
+      - $ref: '#/components/parameters/ID'
+    get:
+      tags:
+        - book
+      summary: Find book by ID
+      description: Returns a single book
+      operationId: getBookById
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Book'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Book not found
+    delete:
+      tags:
+        - book
+      summary: Deletes a book
+      description: ''
+      operationId: deleteBook
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid book ID
+components:
+  parameters:
+    ID:
+      description: Book ID
+      name: bookId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/ID"
+  schemas:
+    Books:
+      type: object
+      properties:
+        results:
+          $ref: "#/components/schemas/BooksArray"
+        next:
+          type: string
+          description: Book next ID for pagination search
+      required:
+        - results
+        - next
+    BooksArray:
+      type: array
+      items:
+        $ref: "#/components/schemas/BookMin"
+    BookMin:
+      type: object
+      properties:
+        _id:
+          $ref: "#/components/schemas/ID"
+        title:
+          type: string
+          description: Book title
+        author:
+          type: string
+          description: Book author
+      required:
+        - _id
+        - title
+        - author
+    Book:
+      # TODO
+    ID:
+      type: string
+      description: Book ID obtained from the database
+      example: 6463448ae7684d03f44af30f
+servers:
+  - url: localhost:3010/api/v2
